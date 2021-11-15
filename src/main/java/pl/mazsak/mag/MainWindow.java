@@ -5,9 +5,13 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import javax.swing.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.FloatBuffer;
 
 public class MainWindow extends JFrame implements GLEventListener {
+
+    private Shader shader;
 
     public MainWindow(int width, int height, String title) {
         final GLProfile profile = GLProfile.get(GLProfile.GL2);
@@ -30,12 +34,22 @@ public class MainWindow extends JFrame implements GLEventListener {
 
     @Override
     public void init(GLAutoDrawable drawable) {
+        GL2 gl2 = drawable.getGL().getGL2();
+        String vertexShaderSource = "shaders/default.vs";
+        String fragmentShaderSource = "shaders/default.fs";
 
+        shader = new Shader();
+        try {
+            shader.init(gl2, vertexShaderSource, fragmentShaderSource);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void dispose(GLAutoDrawable drawable) {
-
+        GL2 gl2 = drawable.getGL().getGL2();
+        shader.destroy(gl2);
     }
 
     @Override
